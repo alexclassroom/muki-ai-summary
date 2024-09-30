@@ -1,5 +1,6 @@
 === Muki AI Summary ===
 Contributors: muki
+Plugin URI: https://muki.tw/muki-ai-summary
 Tags: ai, summary, content
 Requires at least: 5.0
 Tested up to: 6.2
