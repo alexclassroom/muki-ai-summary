@@ -15,6 +15,9 @@
 if (!defined('ABSPATH'))
   exit; // Prevent direct access
 
+// add version number
+define('MUKI_AI_SUMMARY_VERSION', '1.0.1'); // 每次更新 JS 時增加這個版本號
+
 // Setup menu
 function muki_ai_summary_menu() {
   add_options_page('Muki AI Summary Settings', 'Muki AI Summary', 'manage_options', 'muki-ai-summary', 'muki_ai_summary_options_page');
@@ -250,6 +253,8 @@ function muki_ai_generate_summary($content, $post_id, $force_regenerate = false)
   $language = get_option('muki_ai_summary_language', 'zh-TW');
   $max_length = get_option('muki_ai_summary_max_length', 120);
 
+  $system_message = "You are a professional article summarizer. Create a concise summary in 1-2 paragraphs, separated by a blank line. Ensure the summary is complete and doesn't end abruptly. Avoid using terms like 'the author' or 'this article'. Focus on key points and maintain the original tone.";
+
   if (empty($api_key)) {
     update_option('muki_ai_last_error', 'OpenAI API key not set');
     return false;
@@ -259,15 +264,13 @@ function muki_ai_generate_summary($content, $post_id, $force_regenerate = false)
   $title = $post->post_title;
 
   $language_prompts = [
-    'zh-TW' => "Summarize the article content in Traditional Chinese, keeping the total word count between 100 to {$max_length} Chinese characters. Each sentence should be concise and easy to read, directly stating the main points without using third-person perspective terms like \"the author\" or \"the article\". Add a half-width space between Chinese and English or numbers, for example: Apple phone; 3 AI tools.",
-    'zh-CN' => "Summarize the article content in Simplified Chinese, keeping the total word count between 100 to {$max_length} Chinese characters. Each sentence should be concise and easy to read, directly stating the main points without using third-person perspective terms like \"the author\" or \"the article\". Add a half-width space between Chinese and English or numbers, for example: Apple phone; 3 AI tools.",
-    'en' => "Summarize the article content in English, keeping the total word count between 50 to {$max_length} words. Each sentence should be concise and easy to read, directly stating the main points without using third-person perspective terms like \"the author\" or \"the article\".",
-    'jp' => "Summarize the article content in Japanese, keeping the total character count between 100 to {$max_length} characters. Each sentence should be concise and easy to read, directly stating the main points without using third-person perspective terms. Add a half-width space between Japanese and English or numbers, for example: Apple iPhone, 3 AI tools."
+    'zh-TW' => "用繁體中文總結文章，字數{$max_length}以內。句子簡潔易讀，直接陳述要點。中英文和數字間加半形空格，如：Apple 手機；3 個 AI 工具。",
+    'zh-CN' => "用简体中文总结文章，字数{$max_length}以内。句子简洁易读，直接陈述要点。中英文和数字间加半角空格，如：Apple 手机；3 个 AI 工具。",
+    'en' => "Summarize in English, {$max_length} words max. Use concise, direct sentences.",
+    'jp' => "日本語で要約、{$max_length}文字以内。簡潔で読みやすい文で要点を直接述べる。日本語と英語・数字の間に半角ペース、例：Apple iPhone、3 AI ツール。"
   ];
 
   $prompt = $language_prompts[$language] . "\n\n" . <<<EOT
-Please divide the summary into 1 to 2 paragraphs, separating each paragraph with a blank line. Ensure the summary is complete and doesn't cut off abruptly. State the content directly, avoiding terms like "the author", "this article", etc.
-
 Title: {$title}
 
 {$content}
@@ -278,7 +281,7 @@ EOT;
     'messages' => array(
       array(
         'role' => 'system',
-        'content' => 'You are a professional article summary generator. Please generate a complete summary according to the given instructions.'
+        'content' => $system_message
       ),
       array(
         'role' => 'user',
@@ -439,13 +442,13 @@ function muki_ai_summary_enqueue_scripts() {
   $auto_generate_options = get_option('muki_ai_summary_auto_generate', array('single' => false, 'list' => false));
 
   if (is_admin()) {
-    wp_enqueue_script('muki-ai-summary-admin-js', plugin_dir_url(__FILE__) . 'src/js/muki-ai-summary-admin.js', array('jquery'), '1.0', true);
+    wp_enqueue_script('muki-ai-summary-admin-js', plugin_dir_url(__FILE__) . 'src/js/muki-ai-summary-admin.js', array('jquery'), MUKI_AI_SUMMARY_VERSION, true);
     wp_localize_script('muki-ai-summary-admin-js', 'mukiAiSummary', array(
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce' => wp_create_nonce('muki_ai_summary_nonce')
     ));
   } else if (($auto_generate_options['single'] && is_single()) || ($auto_generate_options['list'] && !is_single())) {
-    wp_enqueue_script('muki-ai-summary-js', plugins_url('src/js/muki-ai-summary.js', __FILE__), array('jquery'), '1.0', true);
+    wp_enqueue_script('muki-ai-summary-js', plugins_url('src/js/muki-ai-summary.js', __FILE__), array('jquery'), MUKI_AI_SUMMARY_VERSION, true);
     wp_localize_script('muki-ai-summary-js', 'mukiAiSummary', array(
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce' => wp_create_nonce('muki_ai_summary_nonce'),

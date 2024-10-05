@@ -4,7 +4,20 @@ jQuery(document).ready(function ($) {
     return;
   }
 
-  function generateSummary(postId) {
+  function generateSummary(postId, element) {
+    // 檢查是否已經有摘要內容（不只是檢查元素）
+    if ($(element).find('.muki-ai-summary').text().trim().length > 0) {
+      return; // 如果已經有摘要內容，不再生成
+    }
+
+    // 檢查是否正在加載
+    if ($(element).find('.muki-ai-summary--loading').length > 0) {
+      return; // 如果正在加載，不重複請求
+    }
+
+    // 添加加載指示器
+    $(element).prepend('<div class="muki-ai-summary--loading">正在生成 AI 摘要...</div>');
+
     $.ajax({
       url: mukiAiSummary.ajax_url,
       type: 'POST',
@@ -14,17 +27,16 @@ jQuery(document).ready(function ($) {
         nonce: mukiAiSummary.nonce
       },
       success: function (response) {
-        var $summaryContainer = $('.muki-ai-summary--loading[data-post-id="' + postId + '"]');
         if (response.success) {
-          // 更新內容而不是替換整個元素
-          $summaryContainer.removeClass('muki-ai-summary--loading').addClass('muki-ai-summary');
-          $summaryContainer.html(response.data);
+          $('.muki-ai-summary--loading').replaceWith(response.data);
         } else {
-          $summaryContainer.html('<p class="error">Failed to generate summary: ' + response.data + '</p>');
+          $('.muki-ai-summary--loading').hide();
+          console.error('Failed to generate summary:', response.data);
         }
       },
-      error: function () {
-        $('.muki-ai-summary--loading[data-post-id="' + postId + '"]').html('<p class="error">An error occurred. Please try again later.</p>');
+      error: function (xhr, status, error) {
+        $('.muki-ai-summary--loading').hide();
+        console.error('AJAX error:', status, error);
       }
     });
   }
@@ -40,18 +52,13 @@ jQuery(document).ready(function ($) {
   if (mukiAiSummary.is_single && mukiAiSummary.auto_generate_single) {
     var postId = findPostId();
     if (postId) {
-      generateSummary(postId);
-    } else {
-      console.error('Unable to find post ID on the page');
+      var $article = $('#post-' + postId);
+      generateSummary(postId, $article);
     }
   } else if (!mukiAiSummary.is_single && mukiAiSummary.auto_generate_list) {
     $('[id^="post-"]').each(function () {
       var postId = $(this).attr('id').split('-')[1];
-      if (postId) {
-        generateSummary(postId);
-      } else {
-        console.error('Unable to extract post ID from element');
-      }
+      generateSummary(postId, this);
     });
   }
 });
