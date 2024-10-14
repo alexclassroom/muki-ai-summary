@@ -16,7 +16,7 @@ if (!defined('ABSPATH'))
   exit; // Prevent direct access
 
 // add version number
-define('MUKI_AI_SUMMARY_VERSION', '1.0.1'); // 每次更新 JS 時增加這個版本號
+define('MUKI_AI_SUMMARY_VERSION', '1.0.0');
 
 // Setup menu
 function muki_ai_summary_menu() {
