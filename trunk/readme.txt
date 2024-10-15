@@ -1,10 +1,11 @@
 === Muki AI Summary ===
 Contributors: muki
+Donate link: https://muki.tw/muki-ai-summary
 Tags: ai, summary, content
-Requires at least: 5.0
-Tested up to: 6.2
-Stable tag: 1.0.0
-Requires PHP: 7.2
+Requires at least: 6.0
+Tested up to: 6.6
+Stable tag: 1.0.1
+Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 

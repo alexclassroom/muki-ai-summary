@@ -1,22 +1,23 @@
 <?php
-/*
- Plugin Name: Muki AI Summary
- Plugin URI: https://muki.tw/muki-ai-summary
- Description: WordPress plugin to generate article summaries using OpenAI
- Version: 1.0.0
- Requires at least: 5.0
- Requires PHP: 7.2
- Author: Muki Wu
- Author URI: https://muki.tw/
- License: GPLv2 or later
- License URI: https://www.gnu.org/licenses/gpl-2.0.html
-*/
+
+/**
+ * Plugin Name:			  Muki AI Summary
+ * Plugin URI:			  https://muki.tw/muki-ai-summary
+ * Description:				WordPress plugin to generate article summaries using OpenAI
+ * Requires at least: 6.0
+ * Requires PHP:      7.0
+ * Version:						1.0.1
+ * Author:      			Muki Wu
+ * Author URI:  			https://profiles.wordpress.org/muki
+ * License:     			GPL-2.0-or-later
+ * License URI: 			http://www.gnu.org/licenses/gpl-2.0.txt
+ */
 
 if (!defined('ABSPATH'))
   exit; // Prevent direct access
 
 // add version number
-define('MUKI_AI_SUMMARY_VERSION', '1.0.0');
+define('MUKI_AI_SUMMARY_VERSION', '1.0.1');
 
 // Setup menu
 function muki_ai_summary_menu() {
