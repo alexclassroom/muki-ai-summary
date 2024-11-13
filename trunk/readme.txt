@@ -1,9 +1,9 @@
 === Muki AI Summary ===
 Contributors: muki
 Donate link: https://muki.tw/muki-ai-summary
-Tags: ai, summary, content
+Tags: ai, summary, content openai, article
 Requires at least: 6.0
-Tested up to: 6.6
+Tested up to: 6.6.2
 Stable tag: 1.0.1
 Requires PHP: 7.0
 License: GPLv2 or later
