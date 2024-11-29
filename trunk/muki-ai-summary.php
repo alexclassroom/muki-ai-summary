@@ -6,7 +6,7 @@
  * Description:				WordPress plugin to generate article summaries using OpenAI
  * Requires at least: 6.0
  * Requires PHP:      7.0
- * Version:						1.0.1
+ * Version:						1.0.2
  * Author:      			Muki Wu
  * Author URI:  			https://profiles.wordpress.org/muki
  * License:     			GPL-2.0-or-later
