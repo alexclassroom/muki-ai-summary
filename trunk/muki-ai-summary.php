@@ -27,6 +27,11 @@ add_action('admin_menu', 'muki_ai_summary_menu');
 
 // Settings page content
 function muki_ai_summary_options_page() {
+  // 檢查用戶權限
+  if (!current_user_can('manage_options')) {
+    wp_die(__('You do not have sufficient permissions to access this page.'));
+  }
+
   // Add a button to clear all AI summary data
   if (isset($_POST['muki_ai_clean_summaries'])) {
     check_admin_referer('muki_ai_clean_summaries_nonce');
@@ -235,6 +240,12 @@ function muki_ai_summary_max_length_callback() {
 
 // Generate summary function
 function muki_ai_generate_summary($content, $post_id, $force_regenerate = false) {
+  // Check user permissions
+  if (!current_user_can('edit_posts')) {
+    muki_ai_log_error('Unauthorized access attempt');
+    return false;
+  }
+
   $cached_summary = muki_ai_get_cached_summary($post_id);
   $summary_meta = get_post_meta($post_id, 'muki_ai_summary_meta', true);
 
@@ -385,25 +396,25 @@ function muki_ai_summary_meta_box_callback($post) {
 
 // Add AJAX handler
 function muki_ai_summary_ajax_handler() {
-  error_log('AJAX handler called');
-
+  // check nonce
   if (!check_ajax_referer('muki_ai_summary_nonce', 'nonce', false)) {
-    error_log('Nonce check failed');
+    muki_ai_log_error('Invalid nonce in AJAX request');
     wp_send_json_error('Security check failed');
     return;
   }
 
+  // check user permissions
   if (!current_user_can('edit_posts')) {
-    error_log('User does not have permission');
+    muki_ai_log_error('Unauthorized user attempted to generate summary');
     wp_send_json_error('Insufficient permissions');
     return;
   }
 
   $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
-  error_log('Post ID: ' . $post_id);
-
-  if (!$post_id) {
-    error_log('Invalid post ID');
+  
+  // check post_id
+  if (!$post_id || !get_post($post_id)) {
+    muki_ai_log_error('Invalid post ID: ' . $post_id);
     wp_send_json_error('Invalid post ID');
     return;
   }
@@ -578,11 +589,27 @@ function muki_ai_sanitize_auto_generate($input) {
 
 // New AJAX handler for single post page
 function muki_ai_generate_summary_for_single() {
-  check_ajax_referer('muki_ai_summary_nonce', 'nonce');
+  // check nonce
+  if (!check_ajax_referer('muki_ai_summary_nonce', 'nonce', false)) {
+    muki_ai_log_error('Invalid nonce in single post AJAX request');
+    wp_send_json_error('Security check failed');
+    return;
+  }
+
+  // check user permissions
+  if (!current_user_can('edit_posts')) {
+    muki_ai_log_error('Unauthorized user attempted to generate summary on single post');
+    wp_send_json_error('Insufficient permissions');
+    return;
+  }
 
   $post_id = isset($_POST['post_id']) ? intval($_POST['post_id']) : 0;
-  if (!$post_id) {
+  
+  // check post_id
+  if (!$post_id || !get_post($post_id)) {
+    muki_ai_log_error('Invalid post ID in single post request: ' . $post_id);
     wp_send_json_error('Invalid post ID');
+    return;
   }
 
   $post = get_post($post_id);
@@ -606,6 +633,12 @@ add_action('wp_ajax_nopriv_muki_ai_generate_summary_for_single', 'muki_ai_genera
 
 // clear all summaries
 function muki_ai_clean_all_summaries() {
+  // check user permissions
+  if (!current_user_can('manage_options')) {
+    muki_ai_log_error('Unauthorized user attempted to clean all summaries');
+    return;
+  }
+
   global $wpdb;
   $wpdb->delete($wpdb->postmeta, array('meta_key' => 'muki_ai_summary'));
   $wpdb->delete($wpdb->postmeta, array('meta_key' => 'muki_ai_summary_meta'));
