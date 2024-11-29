@@ -23,6 +23,22 @@ Main features:
 * Supports multiple languages (English, Traditional Chinese, Simplified Chinese, Japanese)
 * Easy-to-use settings interface
 
+= External Service Usage =
+
+This plugin interacts with OpenAI's API service:
+
+* Purpose: Generate article summaries using artificial intelligence
+* Data Transmission:
+  - When: Only when generating a summary (manually or auto-generate if enabled)
+  - Content Sent: Article title and content
+  - Content Received: AI-generated summary text
+* Privacy & Terms:
+  - OpenAI Privacy Policy: https://openai.com/privacy/
+  - OpenAI Terms of Service: https://openai.com/terms/
+  - OpenAI API Data Usage Policy: https://openai.com/policies/api-data-usage-policies
+
+Note: Your OpenAI API key and article content are sent directly to OpenAI's servers. Please review OpenAI's privacy policy and terms of service before using this plugin.
+
 == Installation ==
 
 1. Upload the `muki-ai-summary` folder to the `/wp-content/plugins/` directory
@@ -34,6 +50,10 @@ Main features:
 = How does this plugin work? =
 
 Muki AI Summary uses Open AI to analyze your article content and then generate a concise and accurate summary.
+
+= Is my content secure when using this plugin? =
+
+When generating summaries, your article content is sent to OpenAI's servers. OpenAI maintains strict data privacy and security standards. However, we recommend reviewing OpenAI's privacy policy and terms of service before using this plugin. You can find links to these documents in the "External Service Usage" section above.
 
 = Can I customize the length of the summary? =
 
