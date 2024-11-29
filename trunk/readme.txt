@@ -23,11 +23,13 @@ Main features:
 * Supports multiple languages (English, Traditional Chinese, Simplified Chinese, Japanese)
 * Easy-to-use settings interface
 
-= External Service Usage =
+= External Services =
 
 This plugin interacts with OpenAI's API service:
 
 * Purpose: Generate article summaries using artificial intelligence
+* API URL:
+  - https://api.openai.com/v1/chat/completions
 * Data Transmission:
   - When: Only when generating a summary (manually or auto-generate if enabled)
   - Content Sent: Article title and content
