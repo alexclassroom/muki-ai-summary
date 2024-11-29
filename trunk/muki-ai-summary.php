@@ -271,12 +271,9 @@ function muki_ai_generate_summary($content, $post_id, $force_regenerate = false)
     'jp' => "日本語で要約、{$max_length}文字以内。簡潔で読みやすい文で要点を直接述べる。日本語と英語・数字の間に半角ペース、例：Apple iPhone、3 AI ツール。"
   ];
 
-  $prompt = $language_prompts[$language] . "\n\n" . <<<EOT
-Title: {$title}
-
-{$content}
-EOT;
-
+  $prompt = $language_prompts[$language] . "\n\n" . 
+    "Title: " . $title . "\n\n" . $content;
+    
   $request_body = array(
     'model' => $model,
     'messages' => array(
