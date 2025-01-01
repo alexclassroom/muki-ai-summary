@@ -4,7 +4,7 @@ Donate link: https://muki.tw/muki-ai-summary
 Tags: ai, summary, content openai, article
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.0.4
+Stable tag: 1.0.3
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -67,9 +67,6 @@ Yes, you can customize the length of the summary in the plugin settings.
 2. AI summary example in the article
 
 == Changelog ==
-
-= 1.0.4 =
-Fixed a bug where AI summary would not auto-generate for single posts
 
 = 1.0.1 =
 Added multiple languages: English, Traditional Chinese, Simplified Chinese, Japanese

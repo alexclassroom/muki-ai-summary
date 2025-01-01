@@ -1,11 +1,12 @@
-<? php
+<?php
+
 /**
  * Plugin Name:			  Muki AI Summary
  * Plugin URI:			  https://muki.tw/muki-ai-summary
  * Description:				WordPress plugin to generate article summaries using OpenAI
  * Requires at least: 6.0
  * Requires PHP:      7.0
- * Version:						1.0.4
+ * Version:						1.0.3
  * Author:      			Muki Wu
  * Author URI:  			https://profiles.wordpress.org/muki
  * License:     			GPL-2.0-or-later
@@ -18,7 +19,7 @@ if (!defined('ABSPATH'))
   exit; // Prevent direct access
 
 // add version number
-define('MUKI_AI_SUMMARY_VERSION', '1.0.4');
+define('MUKI_AI_SUMMARY_VERSION', '1.0.1');
 
 // Setup menu
 function muki_ai_summary_menu() {
@@ -28,7 +29,7 @@ add_action('admin_menu', 'muki_ai_summary_menu');
 
 // Settings page content
 function muki_ai_summary_options_page() {
-  // Check user permissions
+  // 檢查用戶權限
   if (!current_user_can('manage_options')) {
     wp_die(__('You do not have sufficient permissions to access this page.', 'muki-ai-summary'));
   }
@@ -222,7 +223,13 @@ function muki_ai_summary_auto_generate_callback() {
     <input type="checkbox" name="muki_ai_summary_auto_generate[single]" value="1" <?php checked(isset($options['single']) && $options['single'], true); ?>>
     <?php _e('Single post page', 'muki-ai-summary'); ?>
   </label>
+  <br>
+  <label>
+    <input type="checkbox" name="muki_ai_summary_auto_generate[list]" value="1" <?php checked(isset($options['list']) && $options['list'], true); ?>>
+    <?php _e('Post list page', 'muki-ai-summary'); ?> *
+  </label>
   <p class="description"><?php _e('Choose where to auto-generate AI summaries (if not already generated).', 'muki-ai-summary'); ?></p>
+  <p class="description"><?php _e('* Using the "Post List" option will generate summaries in the post list, which will consume more money and time, please use it judiciously.', 'muki-ai-summary'); ?></p>
   <?php
 }
 
@@ -451,7 +458,7 @@ function muki_ai_summary_enqueue_scripts() {
       'ajax_url' => admin_url('admin-ajax.php'),
       'nonce' => wp_create_nonce('muki_ai_summary_nonce')
     ));
-  } elseif (($auto_generate_options['single'] && is_single()) || ($auto_generate_options['list'] && !is_single())) {
+  } else if (($auto_generate_options['single'] && is_single()) || ($auto_generate_options['list'] && !is_single())) {
     wp_enqueue_script('muki-ai-summary-js', plugins_url('src/js/muki-ai-summary.js', __FILE__), array('jquery'), MUKI_AI_SUMMARY_VERSION, true);
     wp_localize_script('muki-ai-summary-js', 'mukiAiSummary', array(
       'ajax_url' => admin_url('admin-ajax.php'),
@@ -491,38 +498,33 @@ add_filter('get_the_excerpt', 'muki_ai_replace_excerpt', 10, 1);
 // Display AI summary in post content
 function muki_ai_display_summary($content) {
   global $post;
-  // 只在單篇文章頁面處理
-  if (!is_single()) {
-    return $content;
-  }
+  $auto_generate_options = get_option('muki_ai_summary_auto_generate', array('single' => false, 'list' => false));
 
-  $ai_summary = get_post_meta($post->ID, 'muki_ai_summary', true);
-  $auto_generate_options = get_option('muki_ai_summary_auto_generate', array('single' => false));
-  $summary_position = get_option('muki_ai_summary_position', 'top');
-  $summary_title = get_option('muki_ai_summary_title', __('AI Generated Summary', 'muki-ai-summary'));
+  if (is_single() && isset($auto_generate_options['single']) && $auto_generate_options['single']) {
+    $ai_summary = get_post_meta($post->ID, 'muki_ai_summary', true);
+    $summary_position = get_option('muki_ai_summary_position', 'top');
+    $summary_title = get_option('muki_ai_summary_title', __('AI Generated Summary', 'muki-ai-summary'));
 
-  // 如果已有摘要，直接顯示
-  if (!empty($ai_summary)) {
-    $summary_html = '<div class="muki-ai-summary"><h4 class="muki-ai-summary-title">' . 
-      esc_html($summary_title) . '</h4><p>' . 
-      str_replace("\n\n", "</p><p>", $ai_summary) . '</p></div>';
-    
-    if ($summary_position === 'top') {
-      $content = $summary_html . $content;
-    } else {
-      $content .= $summary_html;
-    }
-  } elseif ($auto_generate_options['single']) {
-    // 如果沒有摘要且啟用了自動生成，顯示載入中
-    $loading_html = '<div class="muki-ai-summary muki-ai-summary--loading" data-post-id="' . $post->ID . '">
-                      <div class="muki-ai-summary__loading-spinner"></div>
-                      <p>' . __('Generating AI summary...', 'muki-ai-summary') . '</p>
-                    </div>';
-    
-    if ($summary_position === 'top') {
-      $content = $loading_html . $content;
-    } else {
-      $content .= $loading_html;
+    if (empty($ai_summary)) {
+      // Display loading effect only if auto-generate is enabled
+      $loading_html = '<div class="muki-ai-summary muki-ai-summary--loading" data-post-id="' . $post->ID . '">
+                          <div class="muki-ai-summary__loading-spinner"></div>
+                          <p>' . __('Generating AI summary...', 'muki-ai-summary') . '</p>
+                        </div>';
+      
+      if ($summary_position === 'top') {
+          $content = $loading_html . $content;
+      } else {
+          $content .= $loading_html;
+      }
+    } elseif (!empty($ai_summary)) {
+      $summary_html = '<div class="muki-ai-summary"><h4 class="muki-ai-summary-title">' . esc_html($summary_title) . '</h4><p>' . str_replace("\n\n", "</p><p>", $ai_summary) . '</p></div>';
+      
+      if ($summary_position === 'top') {
+        $content = $summary_html . $content;
+      } else {
+        $content .= $summary_html;
+      }
     }
   }
   
