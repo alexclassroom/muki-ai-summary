@@ -1,21 +1,22 @@
-<? php
+<?php
 /**
- * Plugin Name:			  Muki AI Summary
- * Plugin URI:			  https://muki.tw/muki-ai-summary
- * Description:				WordPress plugin to generate article summaries using OpenAI
- * Requires at least: 6.0
- * Requires PHP:      7.0
- * Version:						1.0.4
- * Author:      			Muki Wu
- * Author URI:  			https://profiles.wordpress.org/muki
- * License:     			GPL-2.0-or-later
- * License URI: 			http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:      muki-ai-summary
- * Domain Path:      /languages
+ * Plugin Name:        Muki AI Summary
+ * Plugin URI:         https://muki.tw/muki-ai-summary
+ * Description:        WordPress plugin to generate article summaries using OpenAI
+ * Requires at least:  6.0
+ * Requires PHP:       7.0
+ * Version:            1.0.4
+ * Author:             Muki Wu
+ * Author URI:         https://profiles.wordpress.org/muki
+ * License:            GPL-2.0-or-later
+ * License URI:        http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:        muki-ai-summary
+ * Domain Path:        /languages
  */
 
-if (!defined('ABSPATH'))
-  exit; // Prevent direct access
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly
+}
 
 // add version number
 define('MUKI_AI_SUMMARY_VERSION', '1.0.4');
@@ -656,10 +657,10 @@ register_activation_hook(__FILE__, 'muki_ai_summary_activate');
 
 // Load text domain
 function muki_ai_summary_load_textdomain() {
-    load_plugin_textdomain(
-        'muki-ai-summary',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages'
-    );
+  load_plugin_textdomain(
+    'muki-ai-summary',
+    false,
+    dirname(plugin_basename(__FILE__)) . '/languages'
+  );
 }
 add_action('plugins_loaded', 'muki_ai_summary_load_textdomain');
