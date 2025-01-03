@@ -9,11 +9,11 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-使用 Open AI 為您的文章生成摘要。
+使用 OpenAI 為您的文章生成摘要。
 
 == 介紹 ==
 
-Muki AI Summary 串接 Open AI Key，幫助您的自動產生文章摘要。
+Muki AI Summary 串接 OpenAI Key，幫助您的自動產生文章摘要。
 這個工具可以讓您的讀者快速了解文章的主要內容，提高用戶體驗並增加網站的參與度。
 
 主要特點：
@@ -51,7 +51,7 @@ Muki AI Summary 串接 Open AI Key，幫助您的自動產生文章摘要。
 
 = 這個外掛如何工作？ =
 
-Muki AI Summary 使用 Open AI 分析您的文章內容，然後生成一個簡潔而準確的摘要。
+Muki AI Summary 使用 OpenAI 分析您的文章內容，然後生成一個簡潔而準確的摘要。
 
 = 使用這個外掛時，我的內容安全嗎？ =
 

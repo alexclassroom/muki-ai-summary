@@ -23,7 +23,7 @@ define('MUKI_AI_SUMMARY_VERSION', '1.0.4');
 
 // Setup menu
 function muki_ai_summary_menu() {
-  add_options_page('Muki AI Summary Settings', 'Muki AI Summary', 'manage_options', 'muki-ai-summary', 'muki_ai_summary_options_page');
+  add_options_page(__( 'Muki AI Summary Settings', 'muki-ai-summary' ), 'Muki AI Summary', 'manage_options', 'muki-ai-summary', 'muki_ai_summary_options_page');
 }
 add_action('admin_menu', 'muki_ai_summary_menu');
 
@@ -44,7 +44,7 @@ function muki_ai_summary_options_page() {
   }
   ?>
   <div class="wrap">
-    <h1><?php _e('Muki AI Summary Settings', 'muki-ai-summary'); ?></h1>
+    <h1><?php esc_html_e('Muki AI Summary Settings', 'muki-ai-summary'); ?></h1>
     <form method="post" action="options.php">
       <?php
       settings_fields('muki_ai_summary_options');
@@ -54,17 +54,17 @@ function muki_ai_summary_options_page() {
     </form>
     <form method="post" action="">
       <?php wp_nonce_field('muki_ai_clean_summaries_nonce'); ?>
-      <input type="submit" name="muki_ai_clean_summaries" class="button button-secondary" value="Clear All AI Summary Data" onclick="return confirm('Are you sure you want to clear all AI summary data? This action cannot be undone.');">
+      <input type="submit" name="muki_ai_clean_summaries" class="button button-secondary" value="<?php esc_attr_e( 'Clear All AI Summary Data', 'muki-ai-summary' ); ?>" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to clear all AI summary data? This action cannot be undone.', 'muki-ai-summary' ); ?>');">
     </form>
     <div class="muki-ai-summary-usage">
-      <h2><?php _e('Using AI-generated summaries in themes', 'muki-ai-summary'); ?></h2>
-      <p><?php _e('You can use the following function in your theme to display AI-generated summaries:', 'muki-ai-summary'); ?></p>
+      <h2><?php esc_html_e('Using AI-generated summaries in themes', 'muki-ai-summary'); ?></h2>
+      <p><?php esc_html_e('You can use the following function in your theme to display AI-generated summaries:', 'muki-ai-summary'); ?></p>
       <pre><code>if (function_exists('muki_ai_get_summary')) {
             echo muki_ai_get_summary(get_the_ID());
           }</code></pre>
-      <p><?php _e('This function will return the AI-generated summary for the current post. If the summary doesn\'t exist, it will return null.', 'muki-ai-summary'); ?></p>
-      <h2><?php _e('Customizing AI Summary Style', 'muki-ai-summary'); ?></h2>
-      <p><?php _e('AI summaries use the class <code>muki_ai_summary--excerpt</code> for styling. You can customize the style in your theme\'s style.css file:', 'muki-ai-summary'); ?></p>
+      <p><?php esc_html_e('This function will return the AI-generated summary for the current post. If the summary doesn\'t exist, it will return null.', 'muki-ai-summary'); ?></p>
+      <h2><?php esc_html_e('Customizing AI Summary Style', 'muki-ai-summary'); ?></h2>
+      <p><?php printf(esc_html__( 'AI summaries use the class %1$smuki_ai_summary--excerpt%2$s for styling. You can customize the style in your theme\'s style.css file:', 'muki-ai-summary' ),'<code>','</code>'); ?></p>
       <pre><code>.muki_ai_summary--excerpt {
             /* Add your custom styles here */
           }</code></pre>
@@ -85,7 +85,7 @@ function muki_ai_summary_register_settings() {
 
   add_settings_section(
     'muki_ai_summary_main',
-    'Main Settings',
+    __('Main Settings', 'muki-ai-summary'),
     'muki_ai_summary_section_callback',
     'muki-ai-summary'
   );
@@ -172,8 +172,8 @@ function muki_ai_summary_position_callback() {
   $position = get_option('muki_ai_summary_position', 'top');
   ?>
   <select name="muki_ai_summary_position">
-    <option value="top" <?php selected($position, 'top'); ?>><?php _e('Top of the article', 'muki-ai-summary'); ?></option>
-    <option value="bottom" <?php selected($position, 'bottom'); ?>><?php _e('Bottom of the article', 'muki-ai-summary'); ?></option>
+    <option value="top" <?php selected($position, 'top'); ?>><?php esc_html_e('Top of the article', 'muki-ai-summary'); ?></option>
+    <option value="bottom" <?php selected($position, 'bottom'); ?>><?php esc_html_e('Bottom of the article', 'muki-ai-summary'); ?></option>
   </select>
   <?php
 }
@@ -187,10 +187,10 @@ function muki_ai_model_callback() {
   $model = get_option('muki_ai_model', 'gpt-3.5-turbo');
   ?>
   <select name="muki_ai_model">
-    <option value="gpt-3.5-turbo" <?php selected($model, 'gpt-3.5-turbo'); ?>><?php _e('GPT-3.5-turbo', 'muki-ai-summary'); ?></option>
-    <option value="gpt-4o" <?php selected($model, 'gpt-4o'); ?>><?php _e('GPT-4', 'muki-ai-summary'); ?></option>
+    <option value="gpt-3.5-turbo" <?php selected($model, 'gpt-3.5-turbo'); ?>><?php esc_html_e('GPT-3.5-turbo', 'muki-ai-summary'); ?></option>
+    <option value="gpt-4o" <?php selected($model, 'gpt-4o'); ?>><?php esc_html_e('GPT-4', 'muki-ai-summary'); ?></option>
   </select>
-  <p class="description"><?php _e('Choose the OpenAI model to use.', 'muki-ai-summary'); ?></p>
+  <p class="description"><?php esc_html_e('Choose the OpenAI model to use.', 'muki-ai-summary'); ?></p>
   <?php
 }
 
@@ -198,10 +198,10 @@ function muki_ai_summary_language_callback() {
   $language = get_option('muki_ai_summary_language', 'zh-TW');
   ?>
   <select name="muki_ai_summary_language">
-    <option value="zh-TW" <?php selected($language, 'zh-TW'); ?>><?php _e('Traditional Chinese', 'muki-ai-summary'); ?></option>
-    <option value="zh-CN" <?php selected($language, 'zh-CN'); ?>><?php _e('Simplified Chinese', 'muki-ai-summary'); ?></option>
-    <option value="en" <?php selected($language, 'en'); ?>><?php _e('English', 'muki-ai-summary'); ?></option>
-    <option value="jp" <?php selected($language, 'jp'); ?>><?php _e('Japanese', 'muki-ai-summary'); ?></option>
+    <option value="zh-TW" <?php selected($language, 'zh-TW'); ?>><?php esc_html_e('Traditional Chinese', 'muki-ai-summary'); ?></option>
+    <option value="zh-CN" <?php selected($language, 'zh-CN'); ?>><?php esc_html_e('Simplified Chinese', 'muki-ai-summary'); ?></option>
+    <option value="en" <?php selected($language, 'en'); ?>><?php esc_html_e('English', 'muki-ai-summary'); ?></option>
+    <option value="jp" <?php selected($language, 'jp'); ?>><?php esc_html_e('Japanese', 'muki-ai-summary'); ?></option>
   </select>
   <?php
 }
@@ -221,9 +221,9 @@ function muki_ai_summary_auto_generate_callback() {
   ?>
   <label>
     <input type="checkbox" name="muki_ai_summary_auto_generate[single]" value="1" <?php checked(isset($options['single']) && $options['single'], true); ?>>
-    <?php _e('Single post page', 'muki-ai-summary'); ?>
+    <?php esc_html_e('Single post page', 'muki-ai-summary'); ?>
   </label>
-  <p class="description"><?php _e('Choose where to auto-generate AI summaries (if not already generated).', 'muki-ai-summary'); ?></p>
+  <p class="description"><?php esc_html_e('Choose where to auto-generate AI summaries (if not already generated).', 'muki-ai-summary'); ?></p>
   <?php
 }
 
@@ -264,7 +264,7 @@ function muki_ai_generate_summary($content, $post_id, $force_regenerate = false)
   $system_message = "You are a professional article summarizer. Create a concise summary in 1-2 paragraphs, separated by a blank line. Ensure the summary is complete and doesn't end abruptly. Avoid using terms like 'the author' or 'this article'. Focus on key points and maintain the original tone.";
 
   if (empty($api_key)) {
-    update_option('muki_ai_last_error', 'OpenAI API key not set');
+    update_option('muki_ai_last_error', __( 'OpenAI API key not set', 'muki-ai-summary' ));
     return false;
   }
 
@@ -371,7 +371,7 @@ function muki_ai_set_cached_summary($post_id, $summary) {
 
 // Add sidebar button
 function muki_ai_summary_meta_box() {
-  add_meta_box('muki-ai-summary', 'Generate AI Summary', 'muki_ai_summary_meta_box_callback', 'post', 'side', 'high');
+  add_meta_box('muki-ai-summary', __( 'Generate AI Summary', 'muki-ai-summary' ), 'muki_ai_summary_meta_box_callback', 'post', 'side', 'high');
 }
 add_action('add_meta_boxes', 'muki_ai_summary_meta_box');
 
@@ -380,10 +380,10 @@ function muki_ai_summary_meta_box_callback($post) {
   wp_nonce_field('muki_ai_summary_nonce', 'muki_ai_summary_nonce');
   $current_summary = get_post_meta($post->ID, 'muki_ai_summary', true);
   ?>
-  <button id="muki-ai-generate-summary" class="button"><?php _e('Generate AI Summary', 'muki-ai-summary'); ?></button>
+  <button id="muki-ai-generate-summary" class="button"><?php esc_html_e('Generate AI Summary', 'muki-ai-summary'); ?></button>
   <div id="muki-ai-summary-result">
     <?php if (!empty($current_summary)): ?>
-      <h4><?php _e('Current AI Summary:', 'muki-ai-summary'); ?></h4>
+      <h4><?php esc_html_e('Current AI Summary:', 'muki-ai-summary'); ?></h4>
       <p><?php echo wp_kses_post($current_summary); ?></p>
     <?php endif; ?>
   </div>
