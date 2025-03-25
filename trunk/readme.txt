@@ -9,11 +9,11 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Generate article summaries using Open AI.
+Generate article summaries using OpenAI.
 
 == Description ==
 
-Muki AI Summary integrates with Open AI Key to help you automatically generate article summaries.
+Muki AI Summary integrates with OpenAI Key to help you automatically generate article summaries.
 This tool allows your readers to quickly understand the main content of the article, improving user experience and increasing website engagement.
 
 Main features:
@@ -51,7 +51,7 @@ Note: Your OpenAI API key and article content are sent directly to OpenAI's serv
 
 = How does this plugin work? =
 
-Muki AI Summary uses Open AI to analyze your article content and then generate a concise and accurate summary.
+Muki AI Summary uses OpenAI to analyze your article content and then generate a concise and accurate summary.
 
 = Is my content secure when using this plugin? =
 
